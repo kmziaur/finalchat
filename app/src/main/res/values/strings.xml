@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">ChatApp</string>
+    <string name="name">Name</string>
+    <string name="status">Status</string>
+    <string name="type_the_messages">Type The Messages...</string>
+    <string name="rg_username">rg_username</string>
+    <string name="profilename">ProfileName</string>
+</resources>
