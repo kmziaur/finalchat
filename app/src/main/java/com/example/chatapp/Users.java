@@ -3,6 +3,7 @@ package com.example.chatapp;
 public class Users {
     public Object imageuri;
     String profilepic,mail,userName,password,conpassword,userId,lastMessage,status;
+    String fcmToken;
 
     public Users()
     {
@@ -76,5 +77,13 @@ public class Users {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getFcmToken() {
+        return fcmToken;
+    }
+
+    public void setFcmToken(String fcmToken) {
+        this.fcmToken = fcmToken;
     }
 }

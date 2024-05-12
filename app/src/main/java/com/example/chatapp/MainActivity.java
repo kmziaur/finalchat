@@ -13,12 +13,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chatapp.utils.FirebaseUtil;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 
@@ -30,8 +32,12 @@ public class MainActivity extends AppCompatActivity {
     FirebaseDatabase database;
     ArrayList<Users>usersArrayList;
     ImageView imglogout;
+    //FirebaseUtil FirebaseUtil;
 
-    ImageView cumbut,setbut;
+
+    ImageView setbut;
+
+    //ImageView cumbut;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -42,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         database=FirebaseDatabase.getInstance();
         auth=FirebaseAuth.getInstance();
 
-         cumbut = findViewById(R.id.cambut);
+        // cumbut = findViewById(R.id.cambut);
          setbut = findViewById(R.id.settingbut);
 
 
@@ -114,13 +120,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        cumbut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(intent,10);
-            }
-        });
+//        cumbut.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+//                startActivityForResult(intent,10);
+//            }
+//        });
+
+        //for notification 24/4/2024
+        getFCMToken();
 
 
 
@@ -130,5 +139,17 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+        
+    }
+
+     void getFCMToken() {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                String token=task.getResult();
+                FirebaseUtil.currentUserDetails().update("fcmToken",token);
+
+
+            }
+        });
     }
 }

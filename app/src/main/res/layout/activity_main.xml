@@ -4,26 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/mainback"
+    android:background="@color/white"
     tools:context=".MainActivity">
 
 
     <LinearLayout
         android:id="@+id/toolBar"
-        android:layout_width="373dp"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="74dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="17dp"
-        android:layout_marginLeft="17dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="21dp"
-        android:layout_marginRight="21dp"
-        android:layout_marginBottom="652dp"
+        android:layout_marginStart="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginBottom="658dp"
+        android:background="@color/design_default_color_primary"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -32,10 +33,12 @@
             android:id="@+id/toolappname"
             android:layout_width="210dp"
             android:layout_height="73dp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:layout_weight="1"
-            android:text="@string/app_name"
+            android:text="TalkTide"
             android:textColor="@color/black"
-            android:textSize="@dimen/_30sdp"
+            android:textSize="@dimen/_25sdp"
             android:textStyle="bold" />
 
         <ImageView
@@ -51,7 +54,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/mainRecyclerView"
         android:layout_width="wrap_content"
-        android:layout_height="393dp"
+        android:layout_height="580dp"
         android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
@@ -60,34 +63,10 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="24dp"
         android:layout_marginLeft="24dp"
-        android:layout_marginTop="228dp"
+        android:layout_marginTop="75dp"
         android:layout_marginEnd="22dp"
         android:layout_marginRight="22dp"
-        android:layout_marginBottom="110dp" />
-
-    <ImageView
-        android:id="@+id/cambut"
-        android:layout_width="47dp"
-        android:layout_height="38dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="232dp"
-        android:layout_marginRight="232dp"
-        android:layout_marginBottom="37dp"
-        app:srcCompat="@drawable/camera" />
-
-    <ImageView
-        android:id="@+id/imageView4"
-        android:layout_width="47dp"
-        android:layout_height="38dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="176dp"
-        android:layout_marginRight="176dp"
-        android:layout_marginBottom="36dp"
-        app:srcCompat="@drawable/call" />
+        android:layout_marginBottom="76dp" />
 
     <ImageView
         android:id="@+id/settingbut"
@@ -96,9 +75,9 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="104dp"
-        android:layout_marginRight="104dp"
-        android:layout_marginBottom="36dp"
+        android:layout_marginEnd="161dp"
+        android:layout_marginRight="161dp"
+        android:layout_marginBottom="22dp"
         app:srcCompat="@drawable/sett" />
 
 

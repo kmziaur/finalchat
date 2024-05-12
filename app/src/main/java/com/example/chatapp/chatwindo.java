@@ -13,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.chatapp.utils.FirebaseUtil;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,10 +24,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+
 
 public class chatwindo extends AppCompatActivity {
     String reciverimg, reciverUid, reciverName, SenderUID;
@@ -43,6 +51,8 @@ public class chatwindo extends AppCompatActivity {
     RecyclerView messageAdpter;
     ArrayList<msgModelclass> messagesArrayList;
     messagesAdpter mmessagesAdpter;
+    private Users otherUser;
+    //for image capture
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +67,9 @@ public class chatwindo extends AppCompatActivity {
         reciverUid = getIntent().getStringExtra("uid");
 
         messagesArrayList = new ArrayList<>();
+
+        //for image
+
 
         sendbtn = findViewById(R.id.sendbtnn);
         textmsg = findViewById(R.id.textmsg);
@@ -121,6 +134,9 @@ public class chatwindo extends AppCompatActivity {
                     return;
                 }
                 textmsg.setText("");
+
+                //notification 24/4/2024
+                sendNotification(message);
                 Date date = new Date();
                 msgModelclass messagess = new msgModelclass(message, SenderUID, date.getTime());
 
@@ -145,5 +161,85 @@ public class chatwindo extends AppCompatActivity {
             }
         });
 
+
     }
+
+    //notification 24/4/2024
+    void sendNotification(String message) {
+        FirebaseUtil.currentUserDetails().get().addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                Users currentUser = task.getResult().toObject(Users.class);
+                try{
+                    JSONObject jsonObject  = new JSONObject();
+
+                    JSONObject notificationObj = new JSONObject();
+                    notificationObj.put("title",currentUser.getUserName());
+                    notificationObj.put("body",message);
+
+                    JSONObject dataObj = new JSONObject();
+                    dataObj.put("userId",currentUser.getUserId());
+
+                    jsonObject.put("notification",notificationObj);
+                    jsonObject.put("data",dataObj);
+                    jsonObject.put("to",otherUser.getFcmToken());
+
+                    callApi(jsonObject);
+
+
+                }catch (Exception e){
+
+                }
+
+            }
+        });
+
+
+
+    }
+
+    void callApi(JSONObject jsonObject){
+        MediaType JSON = MediaType.get("application/json; charset=utf-8");
+        OkHttpClient client = new OkHttpClient();
+        String url = "https://fcm.googleapis.com/fcm/send";
+        RequestBody body = RequestBody.create(jsonObject.toString(),JSON);
+        Request request = new Request.Builder()
+                .url(url)
+                .post(body)
+                .header("Authorization","Bearer AAAAQh3qGsE:APA91bERZxHYH__fTf-mnOkl6D9ohi6LIhWlj9Id1nBcfGyi-S8oN2TeZJcco86gZ4BohmcCHhNKpa5Gl_JnskF8MP7TGKER-Iae3JwhYfOET_jQMWAz14J_1cv1nuHRHYu5OxLxgGfz")
+                .build();
+       client.newCall(request);
+
+       
+       //enqueue(new Callback() {
+//            @Override
+//            public void onSuccess() {
+//
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//
+//            }
+//
+//            //@Override
+//            public void onFailure(@NonNull Call call, @NonNull IOException e) {
+//
+//            }
+//
+//            @Override
+//            public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+//
+//            }
+//        });
+//
+//
+
+
+    }
+
+
+
+
 }
+
+

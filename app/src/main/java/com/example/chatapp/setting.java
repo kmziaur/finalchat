@@ -15,9 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -26,8 +23,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class setting extends AppCompatActivity {
     ImageView setprofile;
@@ -64,14 +63,25 @@ public class setting extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                email = snapshot.child("mail").getValue().toString();
-                password = snapshot.child("password").getValue().toString();
-                String name = snapshot.child("userName").getValue().toString();
-                String profile = snapshot.child("profilepic").getValue().toString();
-                String status = snapshot.child("status").getValue().toString();
-                setname.setText(name);
-                setstatus.setText(status);
-                Picasso.get().load(profile).into(setprofile);
+                email = snapshot.child("mail").getValue(String.class);
+                password = snapshot.child("password").getValue(String.class);
+                String name = snapshot.child("userName").getValue(String.class);
+                String profile = snapshot.child("profilepic").getValue(String.class);
+                String status = snapshot.child("status").getValue(String.class);
+//                setname.setText(name);
+//                setstatus.setText(status);
+//                Picasso.get().load(profile).into(setprofile);
+
+                //edit 25/4/2024
+                if (name != null) {
+                    setname.setText(name);
+                }
+                if (status != null) {
+                    setstatus.setText(status);
+                }
+                if (profile != null) {
+                    Picasso.get().load(profile).into(setprofile);
+                }
             }
 
             @Override
@@ -89,68 +99,100 @@ public class setting extends AppCompatActivity {
             }
         });
 
-        donebut.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                progressDialog.show();
+//        donebut.setOnClickListener(view -> {
+//            progressDialog.show();
+//
+//            String name = setname.getText().toString();
+//            String Status = setstatus.getText().toString();
+//
+//            if (setImageUri!=null){
+//                storageReference.putFile(setImageUri).addOnCompleteListener(task ->
+//                        storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
+//                            String finalImageUri = uri.toString();
+//                            Users users = new Users(auth.getUid(), name,email,password,finalImageUri,Status);
+//                            reference.setValue(users).addOnCompleteListener(task1 -> {
+//                                if (task1.isSuccessful()){
+//                                    progressDialog.dismiss();
+//                                    Toast.makeText(setting.this, "Data Is save ", Toast.LENGTH_SHORT).show();
+//                                    Intent intent = new Intent(setting.this,MainActivity.class);
+//                                    startActivity(intent);
+//                                    finish();
+//                                }else {
+//                                    progressDialog.dismiss();
+//                                    Toast.makeText(setting.this, "Some thing went wrong", Toast.LENGTH_SHORT).show();
+//                                }
+//                            });
+//                        }));
+//            }else {
+//                storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
+//                    String finalImageUri = uri.toString();
+//                    Users users = new Users(auth.getUid(), name,email,password,finalImageUri,Status);
+//                    reference.setValue(users).addOnCompleteListener(task -> {
+//                        if (task.isSuccessful()){
+//                            progressDialog.dismiss();
+//                            Toast.makeText(setting.this, "Data Is save ", Toast.LENGTH_SHORT).show();
+//                            Intent intent = new Intent(setting.this,MainActivity.class);
+//                            startActivity(intent);
+//                            finish();
+//                        }else {
+//                            progressDialog.dismiss();
+//                            Toast.makeText(setting.this, "Some thing went wrong", Toast.LENGTH_SHORT).show();
+//                        }
+//                    });
+//                });
+//            }
+//
+//        });
 
-                String name = setname.getText().toString();
-                String Status = setstatus.getText().toString();
-                if (setImageUri!=null){
-                    storageReference.putFile(setImageUri).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                @Override
-                                public void onSuccess(Uri uri) {
-                                    String finalImageUri = uri.toString();
-                                    Users users = new Users(auth.getUid(), name,email,password,finalImageUri,Status);
-                                    reference.setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<Void> task) {
-                                            if (task.isSuccessful()){
-                                                progressDialog.dismiss();
-                                                Toast.makeText(setting.this, "Data Is save ", Toast.LENGTH_SHORT).show();
-                                                Intent intent = new Intent(setting.this,MainActivity.class);
-                                                startActivity(intent);
-                                                finish();
-                                            }else {
-                                                progressDialog.dismiss();
-                                                Toast.makeText(setting.this, "Some thing went wrong", Toast.LENGTH_SHORT).show();
-                                            }
-                                        }
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }else {
-                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                        @Override
-                        public void onSuccess(Uri uri) {
+        //edited 2024
+
+        donebut.setOnClickListener(view -> {
+            progressDialog.show();
+
+            String name = setname.getText().toString();
+            String status = setstatus.getText().toString();
+
+            DatabaseReference userRef = reference.child(auth.getUid());
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("userName", name);
+            updates.put("status", status);
+
+            if (setImageUri != null) {
+                storageReference.putFile(setImageUri).addOnCompleteListener(task ->
+                        storageReference.getDownloadUrl().addOnSuccessListener(uri -> {
                             String finalImageUri = uri.toString();
-                            Users users = new Users(auth.getUid(), name,email,password,finalImageUri,Status);
-                            reference.setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()){
-                                        progressDialog.dismiss();
-                                        Toast.makeText(setting.this, "Data Is save ", Toast.LENGTH_SHORT).show();
-                                        Intent intent = new Intent(setting.this,MainActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }else {
-                                        progressDialog.dismiss();
-                                        Toast.makeText(setting.this, "Some thing went romg", Toast.LENGTH_SHORT).show();
-                                    }
+                            updates.put("profilepic", finalImageUri);
+
+                            userRef.updateChildren(updates).addOnCompleteListener(task1 -> {
+                                if (task1.isSuccessful()) {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(setting.this, "Data Is saved", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(setting.this, MainActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                } else {
+                                    progressDialog.dismiss();
+                                    Toast.makeText(setting.this, "Something went wrong", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                        }
-                    });
-                }
-
+                        }));
+            } else {
+                userRef.updateChildren(updates).addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        progressDialog.dismiss();
+                        Toast.makeText(setting.this, "Data Is saved", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(setting.this, MainActivity.class);
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        progressDialog.dismiss();
+                        Toast.makeText(setting.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
+
+
     }
 
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
